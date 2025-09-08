@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mastermind - Code Breaker Training</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <header class="game-header">
+            <h1>Mastermind</h1>
+            <p class="subtitle">Break the Code</p>
+        </header>
+
+        <div class="game-board">
+            <div class="secret-code">
+                <div class="secret-peg" data-position="0">?</div>
+                <div class="secret-peg" data-position="1">?</div>
+                <div class="secret-peg" data-position="2">?</div>
+                <div class="secret-peg" data-position="3">?</div>
+            </div>
+
+            <div class="attempts-container" id="attemptsContainer">
+                <!-- Attempts will be dynamically added here -->
+            </div>
+
+            <div class="current-guess" id="currentGuess">
+                <div class="peg-slot" data-position="0"></div>
+                <div class="peg-slot" data-position="1"></div>
+                <div class="peg-slot" data-position="2"></div>
+                <div class="peg-slot" data-position="3"></div>
+                <button class="submit-guess" id="submitGuess">Check</button>
+            </div>
+        </div>
+
+        <div class="color-palette">
+            <div class="color-peg" data-color="red" style="background: linear-gradient(135deg, #ff6b6b, #ff3838);"></div>
+            <div class="color-peg" data-color="blue" style="background: linear-gradient(135deg, #4dabf7, #228be6);"></div>
+            <div class="color-peg" data-color="green" style="background: linear-gradient(135deg, #51cf66, #2f9e44);"></div>
+            <div class="color-peg" data-color="yellow" style="background: linear-gradient(135deg, #ffd43b, #fab005);"></div>
+            <div class="color-peg" data-color="purple" style="background: linear-gradient(135deg, #9775fa, #7950f2);"></div>
+            <div class="color-peg" data-color="orange" style="background: linear-gradient(135deg, #ff922b, #fd7e14);"></div>
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-hint" id="hintBtn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M9 11l3-3m0 0l3 3m-3-3v8m0-13a9 9 0 110 18 9 9 0 010-18z" stroke-width="2"/>
+                </svg>
+                Get Hint
+            </button>
+            <button class="btn btn-new" id="newGameBtn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-width="2"/>
+                </svg>
+                New Game
+            </button>
+            <button class="btn btn-rules" id="rulesBtn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                    <path d="M12 16v-4m0-4h.01" stroke-width="2" stroke-linecap="round"/>
+                </svg>
+                Rules
+            </button>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-label">Games Played:</span>
+                <span class="stat-value" id="gamesPlayed">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Average Attempts:</span>
+                <span class="stat-value" id="avgAttempts">-</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">Best Score:</span>
+                <span class="stat-value" id="bestScore">-</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hint Modal -->
+    <div class="modal" id="hintModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Logical Hint</h2>
+                <button class="modal-close" id="closeHint">&times;</button>
+            </div>
+            <div class="modal-body" id="hintContent">
+                <!-- Hint content will be dynamically added -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Rules Modal -->
+    <div class="modal" id="rulesModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>How to Play</h2>
+                <button class="modal-close" id="closeRules">&times;</button>
+            </div>
+            <div class="modal-body">
+                <h3>Objective</h3>
+                <p>Guess the secret code of 4 colored pegs within 10 attempts.</p>
+                
+                <h3>How to Play</h3>
+                <ol>
+                    <li>Click on colors from the palette to fill your guess</li>
+                    <li>Click "Check" to submit your guess</li>
+                    <li>Get feedback with black and white pegs</li>
+                </ol>
+                
+                <h3>Feedback Pegs</h3>
+                <div class="rules-pegs">
+                    <div class="rule-item">
+                        <span class="feedback-peg black"></span>
+                        <span>Black = Correct color in correct position</span>
+                    </div>
+                    <div class="rule-item">
+                        <span class="feedback-peg white"></span>
+                        <span>White = Correct color in wrong position</span>
+                    </div>
+                </div>
+                
+                <h3>Tips</h3>
+                <ul>
+                    <li>Colors can repeat in the secret code</li>
+                    <li>Use the hint button when stuck for logical guidance</li>
+                    <li>Pay attention to patterns between attempts</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Win/Lose Modal -->
+    <div class="modal" id="gameEndModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="gameEndTitle">Game Over</h2>
+                <button class="modal-close" id="closeGameEnd">&times;</button>
+            </div>
+            <div class="modal-body" id="gameEndContent">
+                <!-- Game end content will be dynamically added -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" id="playAgainBtn">Play Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+{
+  "name": "mastermind-webapp",
+  "version": "1.0.0",
+  "description": "A beautiful Mastermind code-breaking game with intelligent hints",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx http-server -p 3000",
+    "dev": "npx http-server -p 3000"
+  },
+  "keywords": [
+    "mastermind",
+    "game",
+    "puzzle",
+    "logic",
+    "webapp"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
