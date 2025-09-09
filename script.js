@@ -141,6 +141,12 @@ class MastermindGame {
         const currentRow = document.querySelector(`.attempt-row[data-attempt-number="${rowNumber}"]`);
         if (currentRow) {
             currentRow.classList.add('active');
+            
+            // Auto-select first peg in the row
+            const firstPeg = currentRow.querySelector('.attempt-peg[data-position="0"]');
+            if (firstPeg) {
+                this.selectPeg(firstPeg);
+            }
         }
     }
 
@@ -323,14 +329,8 @@ class MastermindGame {
         this.currentAttemptRow++;
         this.currentGuess = [null, null, null, null];
         this.selectedPeg = null;
-        this.activateRow(this.currentAttemptRow);
+        this.activateRow(this.currentAttemptRow); // This will auto-select first peg
         this.updateSubmitButton();
-        
-        // Auto-select first peg of new row
-        const firstPeg = document.querySelector(`.attempt-peg[data-row="${this.currentAttemptRow}"][data-position="0"]`);
-        if (firstPeg) {
-            this.selectPeg(firstPeg);
-        }
     }
 
     showHint() {
