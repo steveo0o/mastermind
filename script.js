@@ -81,8 +81,10 @@ class MastermindGame {
         this.gameActive = true;
         this.selectedPosition = 0;
         
-        // Clear display
-        this.attemptsContainer.innerHTML = '';
+        // Initialize all 10 rows
+        this.initializeAttemptRows();
+        
+        // Clear current guess
         document.querySelectorAll('.peg-slot').forEach(slot => {
             slot.innerHTML = '';
             slot.style.background = '';
@@ -101,6 +103,31 @@ class MastermindGame {
         
         this.closeModal('gameEndModal');
         console.log('Secret code:', this.secretCode); // For debugging
+    }
+
+    initializeAttemptRows() {
+        this.attemptsContainer.innerHTML = '';
+        for (let i = 1; i <= this.maxAttempts; i++) {
+            const attemptRow = document.createElement('div');
+            attemptRow.className = 'attempt-row';
+            attemptRow.dataset.attemptNumber = i;
+            attemptRow.innerHTML = `
+                <div class="attempt-number">${i}</div>
+                <div class="attempt-pegs">
+                    <div class="attempt-peg empty-peg"></div>
+                    <div class="attempt-peg empty-peg"></div>
+                    <div class="attempt-peg empty-peg"></div>
+                    <div class="attempt-peg empty-peg"></div>
+                </div>
+                <div class="feedback-pegs">
+                    <div class="feedback-peg empty"></div>
+                    <div class="feedback-peg empty"></div>
+                    <div class="feedback-peg empty"></div>
+                    <div class="feedback-peg empty"></div>
+                </div>
+            `;
+            this.attemptsContainer.appendChild(attemptRow);
+        }
     }
 
     generateSecretCode() {
@@ -199,18 +226,23 @@ class MastermindGame {
     }
 
     displayAttempt(guess, feedback) {
-        const attemptRow = document.createElement('div');
-        attemptRow.className = 'attempt-row';
-        attemptRow.innerHTML = `
-            <div class="attempt-number">${this.attempts.length}</div>
-            <div class="attempt-pegs">
-                ${guess.map(color => `<div class="attempt-peg" style="background: ${this.getColorGradient(color)}"></div>`).join('')}
-            </div>
-            <div class="feedback-pegs">
-                ${this.generateFeedbackPegs(feedback)}
-            </div>
-        `;
-        this.attemptsContainer.insertBefore(attemptRow, this.attemptsContainer.firstChild);
+        const attemptNumber = this.attempts.length;
+        const attemptRow = document.querySelector(`.attempt-row[data-attempt-number="${attemptNumber}"]`);
+        
+        if (attemptRow) {
+            // Update the row with the guess
+            attemptRow.classList.add('used');
+            
+            const pegElements = attemptRow.querySelectorAll('.attempt-peg');
+            guess.forEach((color, index) => {
+                pegElements[index].style.background = this.getColorGradient(color);
+                pegElements[index].classList.remove('empty-peg');
+            });
+            
+            // Update feedback pegs
+            const feedbackContainer = attemptRow.querySelector('.feedback-pegs');
+            feedbackContainer.innerHTML = this.generateFeedbackPegs(feedback);
+        }
     }
 
     generateFeedbackPegs(feedback) {
