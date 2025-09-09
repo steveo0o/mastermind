@@ -11,76 +11,106 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 10px;
+    padding: 5px;
     overflow: hidden;
 }
 
 .game-container {
     background: rgba(255, 255, 255, 0.95);
-    border-radius: 20px;
-    padding: 15px;
+    border-radius: 15px;
+    padding: 10px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    max-width: 600px;
     width: 100%;
-    max-height: 98vh;
+    max-width: 700px;
+    height: 95vh;
+    max-height: 600px;
     backdrop-filter: blur(10px);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
 }
 
-.game-header {
-    text-align: center;
+.main-layout {
+    display: flex;
+    gap: 10px;
+    height: 100%;
+}
+
+.color-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 10px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    justify-content: center;
+}
+
+.color-peg {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+}
+
+.color-peg:hover {
+    transform: translateX(5px) scale(1.15);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.25);
+}
+
+.color-peg:active {
+    transform: scale(0.95);
+}
+
+.game-board {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.top-section {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 10px;
+    border-bottom: 2px dashed #e9ecef;
     margin-bottom: 10px;
 }
 
-.game-header h1 {
-    font-size: 2em;
+.top-section h1 {
+    font-size: 1.5em;
     background: linear-gradient(135deg, #667eea, #764ba2);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    margin-bottom: 5px;
     font-weight: 800;
     letter-spacing: -1px;
 }
 
-.subtitle {
-    color: #6c757d;
-    font-size: 0.9em;
-    font-weight: 300;
-}
-
-.game-board {
-    background: white;
-    border-radius: 15px;
-    padding: 15px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-    margin-bottom: 10px;
-    flex: 1;
+.secret-section {
     display: flex;
-    flex-direction: column;
-    min-height: 0;
+    align-items: center;
+    gap: 15px;
 }
 
 .secret-code {
     display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 10px;
-    padding-bottom: 10px;
-    border-bottom: 2px dashed #e9ecef;
+    gap: 8px;
 }
 
 .secret-peg {
-    width: 40px;
-    height: 40px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
     background: linear-gradient(135deg, #e9ecef, #dee2e6);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
     color: #6c757d;
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -106,26 +136,71 @@ body {
     }
 }
 
+.submit-guess {
+    padding: 8px 20px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+}
+
+.submit-guess:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.submit-guess:active {
+    transform: translateY(0);
+}
+
+.submit-guess:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .attempts-container {
-    margin-bottom: 10px;
+    flex: 1;
     display: flex;
     flex-direction: column-reverse;
-    gap: 4px;
-    flex: 1;
-    min-height: 0;
+    gap: 3px;
     overflow-y: auto;
+    padding: 5px;
+}
+
+.attempts-container::-webkit-scrollbar {
+    width: 6px;
+}
+
+.attempts-container::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.attempts-container::-webkit-scrollbar-thumb {
+    background: #667eea;
+    border-radius: 10px;
 }
 
 .attempt-row {
     display: flex;
     align-items: center;
-    gap: 15px;
-    padding: 5px 10px;
+    gap: 10px;
+    padding: 4px 8px;
     background: #f8f9fa;
-    border-radius: 10px;
+    border-radius: 8px;
     opacity: 0.3;
-    transition: opacity 0.3s ease;
-    min-height: 35px;
+    transition: all 0.3s ease;
+    min-height: 38px;
+}
+
+.attempt-row.active {
+    opacity: 0.7;
+    background: #e7f5ff;
 }
 
 .attempt-row.used {
@@ -136,7 +211,7 @@ body {
 @keyframes slideIn {
     from {
         opacity: 0;
-        transform: translateY(-20px);
+        transform: translateY(-10px);
     }
     to {
         opacity: 1;
@@ -147,44 +222,60 @@ body {
 .attempt-number {
     font-weight: bold;
     color: #6c757d;
-    min-width: 30px;
+    font-size: 12px;
+    min-width: 20px;
     text-align: center;
 }
 
 .attempt-pegs {
     display: flex;
-    gap: 10px;
+    gap: 6px;
+    flex: 1;
 }
 
 .attempt-peg {
-    width: 25px;
-    height: 25px;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
 }
 
 .attempt-peg.empty-peg {
     background: #e9ecef;
     box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+    border: 2px dashed #dee2e6;
+}
+
+.attempt-peg.empty-peg:hover {
+    border-color: #667eea;
+    transform: scale(1.1);
+}
+
+.attempt-peg.selected {
+    border: 3px solid #667eea;
+    transform: scale(1.15);
+    box-shadow: 0 0 10px rgba(102, 126, 234, 0.4);
+}
+
+.attempt-peg.filled {
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    border: none;
 }
 
 .feedback-pegs {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 5px;
-    margin-left: auto;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    min-width: 80px;
 }
 
 .feedback-peg {
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
     border: 1px solid #dee2e6;
-}
-
-.feedback-peg.black {
-    background: #212529;
-    box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.3);
 }
 
 .feedback-peg.red {
@@ -203,144 +294,34 @@ body {
     opacity: 0.2;
 }
 
-.current-guess {
+.right-sidebar {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
     gap: 10px;
-    padding: 10px;
-    background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+    width: 80px;
+}
+
+.controls-vertical {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 8px;
+    background: white;
     border-radius: 10px;
-}
-
-.peg-slot {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    border: 2px dashed #6c757d;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    position: relative;
-}
-
-.peg-slot.selected {
-    border-color: #667eea;
-    border-width: 4px;
-    transform: scale(1.1);
-    box-shadow: 0 0 20px rgba(102, 126, 234, 0.4);
-}
-
-.peg-slot.filled {
-    border-style: solid;
-    border-color: transparent;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-}
-
-.submit-guess {
-    padding: 12px 30px;
-    background: linear-gradient(135deg, #667eea, #764ba2);
-    color: white;
-    border: none;
-    border-radius: 25px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-}
-
-.submit-guess:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-}
-
-.submit-guess:active {
-    transform: translateY(0);
-}
-
-.color-palette {
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    margin-bottom: 10px;
-    padding: 10px;
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-}
-
-.color-peg {
-    width: 35px;
-    height: 35px;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
-}
-
-.color-peg:hover {
-    transform: translateY(-5px) scale(1.15);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-}
-
-.color-peg:active {
-    transform: scale(0.95);
-}
-
-.controls {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 5px;
-}
-
-.game-settings {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 10px;
-}
-
-.checkbox-container {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: white;
-    border-radius: 15px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    cursor: pointer;
-    transition: all 0.3s ease;
 }
 
-.checkbox-container:hover {
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
-}
-
-.checkbox-container input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
-    accent-color: #667eea;
-}
-
-.checkbox-label {
-    font-size: 14px;
-    color: #495057;
-    font-weight: 500;
-}
-
-.btn {
-    padding: 8px 16px;
+.btn-small {
+    width: 100%;
+    aspect-ratio: 1;
     border: none;
-    border-radius: 20px;
-    font-size: 13px;
-    font-weight: 600;
+    border-radius: 10px;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
-    gap: 6px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .btn-hint {
@@ -348,19 +329,9 @@ body {
     color: white;
 }
 
-.btn-hint:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(32, 201, 151, 0.3);
-}
-
 .btn-new {
     background: linear-gradient(135deg, #ffd43b, #fab005);
     color: #495057;
-}
-
-.btn-new:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(255, 212, 59, 0.3);
 }
 
 .btn-rules {
@@ -368,18 +339,49 @@ body {
     color: white;
 }
 
-.btn-rules:hover {
+.btn-small:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(116, 192, 252, 0.3);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.stats {
-    display: flex;
-    justify-content: space-around;
-    padding: 10px;
+.settings-vertical {
+    padding: 8px;
     background: white;
-    border-radius: 15px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+.checkbox-vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+}
+
+.checkbox-vertical input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    accent-color: #667eea;
+}
+
+.checkbox-vertical span {
+    font-size: 11px;
+    color: #495057;
+    font-weight: 500;
+}
+
+.stats-vertical {
+    padding: 8px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
 }
 
 .stat-item {
@@ -389,13 +391,13 @@ body {
 .stat-label {
     display: block;
     color: #6c757d;
-    font-size: 14px;
-    margin-bottom: 5px;
+    font-size: 10px;
+    margin-bottom: 2px;
 }
 
 .stat-value {
     display: block;
-    font-size: 18px;
+    font-size: 14px;
     font-weight: bold;
     background: linear-gradient(135deg, #667eea, #764ba2);
     -webkit-background-clip: text;
@@ -618,40 +620,20 @@ body {
 
 @media (max-width: 600px) {
     .game-container {
-        padding: 20px;
+        max-height: 98vh;
     }
     
-    .game-header h1 {
-        font-size: 2em;
-    }
-    
-    .secret-peg {
-        width: 45px;
-        height: 45px;
-        font-size: 18px;
-    }
-    
-    .peg-slot {
-        width: 45px;
-        height: 45px;
+    .right-sidebar {
+        width: 60px;
     }
     
     .color-peg {
-        width: 40px;
-        height: 40px;
+        width: 30px;
+        height: 30px;
     }
     
-    .controls {
-        flex-direction: column;
-    }
-    
-    .btn {
-        width: 100%;
-        justify-content: center;
-    }
-    
-    .stats {
-        flex-direction: column;
-        gap: 15px;
+    .attempt-peg {
+        width: 24px;
+        height: 24px;
     }
 }
