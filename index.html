@@ -15,11 +15,6 @@
                 <div class="secret-peg" data-position="2">?</div>
                 <div class="secret-peg" data-position="3">?</div>
             </div>
-            <div class="stats-inline">
-                <span class="stat" title="Games Played">Games: <strong id="gamesPlayed">0</strong></span>
-                <span class="stat" title="Average Attempts">Avg: <strong id="avgAttempts">-</strong></span>
-                <span class="stat" title="Best Score">Best: <strong id="bestScore">-</strong></span>
-            </div>
         </div>
 
         <div class="attempts-container" id="attemptsContainer">
@@ -35,8 +30,13 @@
                 <div class="color-peg" data-color="purple" style="background: linear-gradient(135deg, #9775fa, #7950f2);"></div>
                 <div class="color-peg" data-color="orange" style="background: linear-gradient(135deg, #ff922b, #fd7e14);"></div>
             </div>
-            <div class="controls-row">
-                <button class="submit-guess" id="submitGuess">CHECK</button>
+            <button class="submit-guess" id="submitGuess">CHECK</button>
+            <div class="info-row">
+                <div class="stats-inline">
+                    <span class="stat">G: <strong id="gamesPlayed">0</strong></span>
+                    <span class="stat">A: <strong id="avgAttempts">-</strong></span>
+                    <span class="stat">B: <strong id="bestScore">-</strong></span>
+                </div>
                 <div class="control-buttons">
                     <button class="btn-icon" id="hintBtn" title="Get Hint">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -112,6 +112,13 @@
                     <li>Toggle "Repeats" to allow/disallow duplicate colors</li>
                     <li>Use the hint button when stuck for logical guidance</li>
                     <li>Pay attention to patterns between attempts</li>
+                </ul>
+                
+                <h3>Statistics</h3>
+                <ul>
+                    <li><strong>G</strong> = Games Played (total number of games)</li>
+                    <li><strong>A</strong> = Average Attempts (average guesses to win)</li>
+                    <li><strong>B</strong> = Best Score (fewest attempts to win)</li>
                 </ul>
             </div>
         </div>
