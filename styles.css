@@ -81,8 +81,8 @@ body {
 }
 
 .stats-inline {
-    display: flex;
-    gap: 8px;
+    display: inline-flex;
+    gap: 10px;
     font-size: 11px;
     color: #6c757d;
 }
@@ -98,13 +98,14 @@ body {
     justify-content: flex-start;
     gap: 2px;
     overflow-y: hidden;
-    padding: 4px 0;
+    padding: 4px 12px;
     background: white;
     border-radius: 8px;
     margin-bottom: 6px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     flex: 1;
     min-height: 0;
+    align-items: center;
 }
 
 .attempts-container::-webkit-scrollbar {
@@ -131,7 +132,8 @@ body {
     opacity: 0.3;
     transition: all 0.3s ease;
     min-height: 38px;
-    width: 100%;
+    width: auto;
+    margin: 0 auto;
 }
 
 .attempt-row.active {
@@ -279,9 +281,10 @@ body {
 
 .info-row {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
 .submit-guess:hover {
@@ -299,8 +302,8 @@ body {
 }
 
 .control-buttons {
-    display: flex;
-    gap: 6px;
+    display: inline-flex;
+    gap: 8px;
     align-items: center;
 }
 
