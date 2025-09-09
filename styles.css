@@ -98,23 +98,10 @@ body {
 }
 
 .attempts-container {
-    max-height: 300px;
-    overflow-y: auto;
     margin-bottom: 20px;
-}
-
-.attempts-container::-webkit-scrollbar {
-    width: 8px;
-}
-
-.attempts-container::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 10px;
-}
-
-.attempts-container::-webkit-scrollbar-thumb {
-    background: #667eea;
-    border-radius: 10px;
+    display: flex;
+    flex-direction: column-reverse;
+    gap: 8px;
 }
 
 .attempt-row {
@@ -122,9 +109,14 @@ body {
     align-items: center;
     gap: 20px;
     padding: 10px;
-    margin-bottom: 10px;
     background: #f8f9fa;
     border-radius: 15px;
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+}
+
+.attempt-row.used {
+    opacity: 1;
     animation: slideIn 0.3s ease-out;
 }
 
@@ -156,6 +148,11 @@ body {
     height: 40px;
     border-radius: 50%;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.attempt-peg.empty-peg {
+    background: #e9ecef;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .feedback-pegs {
