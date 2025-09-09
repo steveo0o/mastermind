@@ -8,8 +8,26 @@
 </head>
 <body>
     <div class="game-container">
-        <div class="main-layout">
-            <div class="color-sidebar">
+        <div class="top-section">
+            <div class="secret-code">
+                <div class="secret-peg" data-position="0">?</div>
+                <div class="secret-peg" data-position="1">?</div>
+                <div class="secret-peg" data-position="2">?</div>
+                <div class="secret-peg" data-position="3">?</div>
+            </div>
+            <div class="stats-inline">
+                <span class="stat">G: <strong id="gamesPlayed">0</strong></span>
+                <span class="stat">A: <strong id="avgAttempts">-</strong></span>
+                <span class="stat">B: <strong id="bestScore">-</strong></span>
+            </div>
+        </div>
+
+        <div class="attempts-container" id="attemptsContainer">
+            <!-- Attempts will be dynamically added here -->
+        </div>
+
+        <div class="bottom-section">
+            <div class="color-palette">
                 <div class="color-peg" data-color="red" style="background: linear-gradient(135deg, #ff6b6b, #ff3838);"></div>
                 <div class="color-peg" data-color="blue" style="background: linear-gradient(135deg, #4dabf7, #228be6);"></div>
                 <div class="color-peg" data-color="green" style="background: linear-gradient(135deg, #51cf66, #2f9e44);"></div>
@@ -17,50 +35,29 @@
                 <div class="color-peg" data-color="purple" style="background: linear-gradient(135deg, #9775fa, #7950f2);"></div>
                 <div class="color-peg" data-color="orange" style="background: linear-gradient(135deg, #ff922b, #fd7e14);"></div>
             </div>
-
-            <div class="game-board">
-                <div class="top-section">
-                    <button class="submit-guess" id="submitGuess">CHECK</button>
-                    <div class="secret-code">
-                        <div class="secret-peg" data-position="0">?</div>
-                        <div class="secret-peg" data-position="1">?</div>
-                        <div class="secret-peg" data-position="2">?</div>
-                        <div class="secret-peg" data-position="3">?</div>
-                    </div>
-                </div>
-
-                <div class="attempts-container" id="attemptsContainer">
-                    <!-- Attempts will be dynamically added here -->
-                </div>
-
-                <div class="bottom-controls">
-                    <div class="control-buttons">
-                        <button class="btn-icon" id="hintBtn" title="Get Hint">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <path d="M9 11l3-3m0 0l3 3m-3-3v8m0-13a9 9 0 110 18 9 9 0 010-18z" stroke-width="2"/>
-                            </svg>
-                        </button>
-                        <button class="btn-icon" id="newGameBtn" title="New Game">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-width="2"/>
-                            </svg>
-                        </button>
-                        <button class="btn-icon" id="rulesBtn" title="Rules">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                <circle cx="12" cy="12" r="10" stroke-width="2"/>
-                                <path d="M12 16v-4m0-4h.01" stroke-width="2" stroke-linecap="round"/>
-                            </svg>
-                        </button>
-                        <label class="checkbox-inline" title="Allow repeating colors">
-                            <input type="checkbox" id="allowRepeats" checked>
-                            <span>Repeats</span>
-                        </label>
-                    </div>
-                    <div class="stats-inline">
-                        <span class="stat">G: <strong id="gamesPlayed">0</strong></span>
-                        <span class="stat">A: <strong id="avgAttempts">-</strong></span>
-                        <span class="stat">B: <strong id="bestScore">-</strong></span>
-                    </div>
+            <div class="controls-row">
+                <button class="submit-guess" id="submitGuess">CHECK</button>
+                <div class="control-buttons">
+                    <button class="btn-icon" id="hintBtn" title="Get Hint">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M9 11l3-3m0 0l3 3m-3-3v8m0-13a9 9 0 110 18 9 9 0 010-18z" stroke-width="2"/>
+                        </svg>
+                    </button>
+                    <button class="btn-icon" id="newGameBtn" title="New Game">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-width="2"/>
+                        </svg>
+                    </button>
+                    <button class="btn-icon" id="rulesBtn" title="Rules">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                            <path d="M12 16v-4m0-4h.01" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                    <label class="checkbox-inline" title="Allow repeating colors">
+                        <input type="checkbox" id="allowRepeats" checked>
+                        <span>Repeats</span>
+                    </label>
                 </div>
             </div>
         </div>
@@ -93,8 +90,8 @@
                 <h3>How to Play</h3>
                 <ol>
                     <li>Click on empty circles in a row to select them</li>
-                    <li>Click colors from the left sidebar to fill selected circles</li>
-                    <li>Click "CHECK" at the top to submit your guess</li>
+                    <li>Click colors from the bottom to fill selected circles</li>
+                    <li>Click "CHECK" to submit your guess</li>
                     <li>Get feedback with red and white pegs</li>
                 </ol>
                 
