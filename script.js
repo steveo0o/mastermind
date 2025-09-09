@@ -8,6 +8,7 @@ class MastermindGame {
         this.currentGuess = [];
         this.selectedPosition = null;
         this.gameActive = true;
+        this.allowRepeats = true;
         this.stats = this.loadStats();
         
         this.initializeElements();
@@ -26,6 +27,7 @@ class MastermindGame {
         this.hintModal = document.getElementById('hintModal');
         this.rulesModal = document.getElementById('rulesModal');
         this.gameEndModal = document.getElementById('gameEndModal');
+        this.allowRepeatsCheckbox = document.getElementById('allowRepeats');
     }
 
     bindEvents() {
@@ -50,6 +52,12 @@ class MastermindGame {
         this.hintBtn.addEventListener('click', () => this.showHint());
         this.newGameBtn.addEventListener('click', () => this.startNewGame());
         this.rulesBtn.addEventListener('click', () => this.showRules());
+        
+        // Settings
+        this.allowRepeatsCheckbox.addEventListener('change', () => {
+            this.allowRepeats = this.allowRepeatsCheckbox.checked;
+            this.startNewGame();
+        });
 
         // Modal controls
         document.getElementById('closeHint').addEventListener('click', () => this.closeModal('hintModal'));
@@ -132,9 +140,22 @@ class MastermindGame {
 
     generateSecretCode() {
         const code = [];
-        for (let i = 0; i < this.codeLength; i++) {
-            code.push(this.colors[Math.floor(Math.random() * this.colors.length)]);
+        
+        if (this.allowRepeats) {
+            // Allow repeating colors
+            for (let i = 0; i < this.codeLength; i++) {
+                code.push(this.colors[Math.floor(Math.random() * this.colors.length)]);
+            }
+        } else {
+            // No repeating colors - use Fisher-Yates shuffle
+            const availableColors = [...this.colors];
+            for (let i = 0; i < this.codeLength; i++) {
+                const randomIndex = Math.floor(Math.random() * availableColors.length);
+                code.push(availableColors[randomIndex]);
+                availableColors.splice(randomIndex, 1);
+            }
         }
+        
         return code;
     }
 
@@ -248,7 +269,7 @@ class MastermindGame {
     generateFeedbackPegs(feedback) {
         const pegs = [];
         for (let i = 0; i < feedback.black; i++) {
-            pegs.push('<div class="feedback-peg black"></div>');
+            pegs.push('<div class="feedback-peg red"></div>');
         }
         for (let i = 0; i < feedback.white; i++) {
             pegs.push('<div class="feedback-peg white"></div>');
