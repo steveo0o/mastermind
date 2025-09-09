@@ -6,7 +6,8 @@ class MastermindGame {
         this.secretCode = [];
         this.attempts = [];
         this.currentGuess = [];
-        this.selectedPosition = null;
+        this.currentAttemptRow = 1;
+        this.selectedPeg = null;
         this.gameActive = true;
         this.allowRepeats = true;
         this.stats = this.loadStats();
@@ -19,7 +20,6 @@ class MastermindGame {
 
     initializeElements() {
         this.attemptsContainer = document.getElementById('attemptsContainer');
-        this.currentGuessEl = document.getElementById('currentGuess');
         this.submitBtn = document.getElementById('submitGuess');
         this.hintBtn = document.getElementById('hintBtn');
         this.newGameBtn = document.getElementById('newGameBtn');
@@ -34,15 +34,6 @@ class MastermindGame {
         // Color palette selection
         document.querySelectorAll('.color-peg').forEach(peg => {
             peg.addEventListener('click', (e) => this.selectColor(e.target.dataset.color));
-        });
-
-        // Current guess slots
-        document.querySelectorAll('.peg-slot').forEach(slot => {
-            slot.addEventListener('click', (e) => {
-                this.selectedPosition = parseInt(e.target.dataset.position);
-                document.querySelectorAll('.peg-slot').forEach(s => s.classList.remove('selected'));
-                e.target.classList.add('selected');
-            });
         });
 
         // Submit guess
@@ -70,7 +61,7 @@ class MastermindGame {
 
         // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter' && this.currentGuess.length === this.codeLength) {
+            if (e.key === 'Enter' && this.canSubmit()) {
                 this.submitGuess();
             }
             if (e.key >= '1' && e.key <= '6') {
@@ -85,19 +76,13 @@ class MastermindGame {
     startNewGame() {
         this.secretCode = this.generateSecretCode();
         this.attempts = [];
-        this.currentGuess = [];
+        this.currentGuess = [null, null, null, null];
+        this.currentAttemptRow = 1;
+        this.selectedPeg = null;
         this.gameActive = true;
-        this.selectedPosition = 0;
         
         // Initialize all 10 rows
         this.initializeAttemptRows();
-        
-        // Clear current guess
-        document.querySelectorAll('.peg-slot').forEach(slot => {
-            slot.innerHTML = '';
-            slot.style.background = '';
-            slot.classList.remove('filled');
-        });
         
         // Reset secret display
         document.querySelectorAll('.secret-peg').forEach(peg => {
@@ -105,9 +90,9 @@ class MastermindGame {
             peg.style.background = '';
             peg.classList.remove('revealed');
         });
-
-        // Select first slot
-        document.querySelector('.peg-slot[data-position="0"]').classList.add('selected');
+        
+        // Update submit button state
+        this.updateSubmitButton();
         
         this.closeModal('gameEndModal');
         console.log('Secret code:', this.secretCode); // For debugging
@@ -122,10 +107,10 @@ class MastermindGame {
             attemptRow.innerHTML = `
                 <div class="attempt-number">${i}</div>
                 <div class="attempt-pegs">
-                    <div class="attempt-peg empty-peg"></div>
-                    <div class="attempt-peg empty-peg"></div>
-                    <div class="attempt-peg empty-peg"></div>
-                    <div class="attempt-peg empty-peg"></div>
+                    <div class="attempt-peg empty-peg" data-position="0" data-row="${i}"></div>
+                    <div class="attempt-peg empty-peg" data-position="1" data-row="${i}"></div>
+                    <div class="attempt-peg empty-peg" data-position="2" data-row="${i}"></div>
+                    <div class="attempt-peg empty-peg" data-position="3" data-row="${i}"></div>
                 </div>
                 <div class="feedback-pegs">
                     <div class="feedback-peg empty"></div>
@@ -135,7 +120,91 @@ class MastermindGame {
                 </div>
             `;
             this.attemptsContainer.appendChild(attemptRow);
+            
+            // Add click handlers to pegs in this row
+            attemptRow.querySelectorAll('.attempt-peg').forEach(peg => {
+                peg.addEventListener('click', (e) => this.selectPeg(e.target));
+            });
         }
+        
+        // Activate first row
+        this.activateRow(1);
+    }
+
+    activateRow(rowNumber) {
+        // Deactivate all rows
+        document.querySelectorAll('.attempt-row').forEach(row => {
+            row.classList.remove('active');
+        });
+        
+        // Activate current row
+        const currentRow = document.querySelector(`.attempt-row[data-attempt-number="${rowNumber}"]`);
+        if (currentRow) {
+            currentRow.classList.add('active');
+        }
+    }
+
+    selectPeg(pegElement) {
+        if (!this.gameActive) return;
+        
+        const row = parseInt(pegElement.dataset.row);
+        const position = parseInt(pegElement.dataset.position);
+        
+        // Only allow selection in the current row
+        if (row !== this.currentAttemptRow) return;
+        
+        // Remove previous selection
+        if (this.selectedPeg) {
+            this.selectedPeg.classList.remove('selected');
+        }
+        
+        // Select new peg
+        this.selectedPeg = pegElement;
+        pegElement.classList.add('selected');
+    }
+
+    selectColor(color) {
+        if (!this.gameActive || !this.selectedPeg) return;
+        
+        const position = parseInt(this.selectedPeg.dataset.position);
+        this.currentGuess[position] = color;
+        
+        // Update visual
+        this.selectedPeg.style.background = this.getColorGradient(color);
+        this.selectedPeg.classList.remove('empty-peg');
+        this.selectedPeg.classList.add('filled');
+        
+        // Auto-advance to next empty peg in the row
+        const nextEmptyPeg = this.findNextEmptyPeg();
+        if (nextEmptyPeg) {
+            this.selectPeg(nextEmptyPeg);
+        } else {
+            // If no empty pegs, keep current selection
+            this.selectedPeg.classList.remove('selected');
+            this.selectedPeg = null;
+        }
+        
+        // Update submit button state
+        this.updateSubmitButton();
+    }
+
+    findNextEmptyPeg() {
+        const currentRowPegs = document.querySelectorAll(`.attempt-peg[data-row="${this.currentAttemptRow}"]`);
+        for (let peg of currentRowPegs) {
+            const position = parseInt(peg.dataset.position);
+            if (this.currentGuess[position] === null) {
+                return peg;
+            }
+        }
+        return null;
+    }
+
+    canSubmit() {
+        return this.currentGuess.every(color => color !== null);
+    }
+
+    updateSubmitButton() {
+        this.submitBtn.disabled = !this.canSubmit();
     }
 
     generateSecretCode() {
@@ -159,27 +228,6 @@ class MastermindGame {
         return code;
     }
 
-    selectColor(color) {
-        if (!this.gameActive) return;
-        
-        if (this.selectedPosition !== null && this.selectedPosition < this.codeLength) {
-            const slot = document.querySelector(`.peg-slot[data-position="${this.selectedPosition}"]`);
-            this.currentGuess[this.selectedPosition] = color;
-            
-            // Update visual
-            slot.style.background = this.getColorGradient(color);
-            slot.classList.add('filled');
-            slot.innerHTML = '';
-            
-            // Auto-advance to next position
-            if (this.selectedPosition < this.codeLength - 1) {
-                this.selectedPosition++;
-                document.querySelectorAll('.peg-slot').forEach(s => s.classList.remove('selected'));
-                document.querySelector(`.peg-slot[data-position="${this.selectedPosition}"]`).classList.add('selected');
-            }
-        }
-    }
-
     getColorGradient(color) {
         const gradients = {
             'red': 'linear-gradient(135deg, #ff6b6b, #ff3838)',
@@ -193,10 +241,7 @@ class MastermindGame {
     }
 
     submitGuess() {
-        if (!this.gameActive || this.currentGuess.length !== this.codeLength) {
-            if (this.currentGuess.length !== this.codeLength) {
-                this.showMessage('Please fill all positions before submitting!');
-            }
+        if (!this.gameActive || !this.canSubmit()) {
             return;
         }
 
@@ -206,14 +251,14 @@ class MastermindGame {
             feedback: feedback
         });
 
-        this.displayAttempt(this.currentGuess, feedback);
+        this.displayAttempt(feedback);
 
         if (feedback.black === this.codeLength) {
             this.endGame(true);
         } else if (this.attempts.length >= this.maxAttempts) {
             this.endGame(false);
         } else {
-            this.resetCurrentGuess();
+            this.nextAttempt();
         }
     }
 
@@ -246,19 +291,13 @@ class MastermindGame {
         return { black, white };
     }
 
-    displayAttempt(guess, feedback) {
-        const attemptNumber = this.attempts.length;
-        const attemptRow = document.querySelector(`.attempt-row[data-attempt-number="${attemptNumber}"]`);
+    displayAttempt(feedback) {
+        const attemptRow = document.querySelector(`.attempt-row[data-attempt-number="${this.currentAttemptRow}"]`);
         
         if (attemptRow) {
-            // Update the row with the guess
+            // Mark row as used
+            attemptRow.classList.remove('active');
             attemptRow.classList.add('used');
-            
-            const pegElements = attemptRow.querySelectorAll('.attempt-peg');
-            guess.forEach((color, index) => {
-                pegElements[index].style.background = this.getColorGradient(color);
-                pegElements[index].classList.remove('empty-peg');
-            });
             
             // Update feedback pegs
             const feedbackContainer = attemptRow.querySelector('.feedback-pegs');
@@ -280,15 +319,18 @@ class MastermindGame {
         return pegs.join('');
     }
 
-    resetCurrentGuess() {
-        this.currentGuess = [];
-        this.selectedPosition = 0;
-        document.querySelectorAll('.peg-slot').forEach((slot, index) => {
-            slot.innerHTML = '';
-            slot.style.background = '';
-            slot.classList.remove('filled', 'selected');
-            if (index === 0) slot.classList.add('selected');
-        });
+    nextAttempt() {
+        this.currentAttemptRow++;
+        this.currentGuess = [null, null, null, null];
+        this.selectedPeg = null;
+        this.activateRow(this.currentAttemptRow);
+        this.updateSubmitButton();
+        
+        // Auto-select first peg of new row
+        const firstPeg = document.querySelector(`.attempt-peg[data-row="${this.currentAttemptRow}"][data-position="0"]`);
+        if (firstPeg) {
+            this.selectPeg(firstPeg);
+        }
     }
 
     showHint() {
@@ -335,7 +377,7 @@ class MastermindGame {
                 <ul>
                     ${hints.slice(0, 3).map(hint => `<li>${hint}</li>`).join('')}
                 </ul>
-                <p class="hint-tip">Remember: Black pegs mean correct color AND position. White pegs mean correct color but wrong position.</p>
+                <p class="hint-tip">Remember: Red pegs mean correct color AND position. White pegs mean correct color but wrong position.</p>
             </div>
         `;
     }
@@ -363,9 +405,9 @@ class MastermindGame {
 
         if (changes.length === 1) {
             if (blackDiff === 1) {
-                insight = `Changing position ${changes[0].position + 1} from ${changes[0].from} to ${changes[0].to} gave you an extra black peg. ${changes[0].to} is correct at position ${changes[0].position + 1}!`;
+                insight = `Changing position ${changes[0].position + 1} from ${changes[0].from} to ${changes[0].to} gave you an extra red peg. ${changes[0].to} is correct at position ${changes[0].position + 1}!`;
             } else if (blackDiff === -1) {
-                insight = `Changing position ${changes[0].position + 1} from ${changes[0].from} to ${changes[0].to} lost a black peg. ${changes[0].from} was correct at position ${changes[0].position + 1}!`;
+                insight = `Changing position ${changes[0].position + 1} from ${changes[0].from} to ${changes[0].to} lost a red peg. ${changes[0].from} was correct at position ${changes[0].position + 1}!`;
             } else if (whiteDiff === 1 && blackDiff === 0) {
                 insight = `${changes[0].to} is in the code but not at position ${changes[0].position + 1}.`;
             }
@@ -373,9 +415,9 @@ class MastermindGame {
 
         if (changes.length === 2 && changes[0].from === changes[1].to && changes[0].to === changes[1].from) {
             if (blackDiff === 2) {
-                insight = `Swapping positions ${changes[0].position + 1} and ${changes[1].position + 1} gave you 2 more black pegs. Both colors are now in their correct positions!`;
+                insight = `Swapping positions ${changes[0].position + 1} and ${changes[1].position + 1} gave you 2 more red pegs. Both colors are now in their correct positions!`;
             } else if (blackDiff === -2) {
-                insight = `Swapping positions ${changes[0].position + 1} and ${changes[1].position + 1} lost 2 black pegs. Both colors were in their correct positions before!`;
+                insight = `Swapping positions ${changes[0].position + 1} and ${changes[1].position + 1} lost 2 red pegs. Both colors were in their correct positions before!`;
             }
         }
 
