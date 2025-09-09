@@ -3,87 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mastermind - Code Breaker Training</title>
+    <title>Mastermind</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="game-container">
-        <header class="game-header">
-            <h1>Mastermind</h1>
-            <p class="subtitle">Break the Code</p>
-        </header>
-
-        <div class="game-board">
-            <div class="secret-code">
-                <div class="secret-peg" data-position="0">?</div>
-                <div class="secret-peg" data-position="1">?</div>
-                <div class="secret-peg" data-position="2">?</div>
-                <div class="secret-peg" data-position="3">?</div>
+        <div class="main-layout">
+            <div class="color-sidebar">
+                <div class="color-peg" data-color="red" style="background: linear-gradient(135deg, #ff6b6b, #ff3838);"></div>
+                <div class="color-peg" data-color="blue" style="background: linear-gradient(135deg, #4dabf7, #228be6);"></div>
+                <div class="color-peg" data-color="green" style="background: linear-gradient(135deg, #51cf66, #2f9e44);"></div>
+                <div class="color-peg" data-color="yellow" style="background: linear-gradient(135deg, #ffd43b, #fab005);"></div>
+                <div class="color-peg" data-color="purple" style="background: linear-gradient(135deg, #9775fa, #7950f2);"></div>
+                <div class="color-peg" data-color="orange" style="background: linear-gradient(135deg, #ff922b, #fd7e14);"></div>
             </div>
 
-            <div class="attempts-container" id="attemptsContainer">
-                <!-- Attempts will be dynamically added here -->
+            <div class="game-board">
+                <div class="top-section">
+                    <h1>Mastermind</h1>
+                    <div class="secret-section">
+                        <div class="secret-code">
+                            <div class="secret-peg" data-position="0">?</div>
+                            <div class="secret-peg" data-position="1">?</div>
+                            <div class="secret-peg" data-position="2">?</div>
+                            <div class="secret-peg" data-position="3">?</div>
+                        </div>
+                        <button class="submit-guess" id="submitGuess">CHECK</button>
+                    </div>
+                </div>
+
+                <div class="attempts-container" id="attemptsContainer">
+                    <!-- Attempts will be dynamically added here -->
+                </div>
             </div>
 
-            <div class="current-guess" id="currentGuess">
-                <div class="peg-slot" data-position="0"></div>
-                <div class="peg-slot" data-position="1"></div>
-                <div class="peg-slot" data-position="2"></div>
-                <div class="peg-slot" data-position="3"></div>
-                <button class="submit-guess" id="submitGuess">Check</button>
-            </div>
-        </div>
+            <div class="right-sidebar">
+                <div class="controls-vertical">
+                    <button class="btn-small btn-hint" id="hintBtn" title="Get Hint">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M9 11l3-3m0 0l3 3m-3-3v8m0-13a9 9 0 110 18 9 9 0 010-18z" stroke-width="2"/>
+                        </svg>
+                    </button>
+                    <button class="btn-small btn-new" id="newGameBtn" title="New Game">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-width="2"/>
+                        </svg>
+                    </button>
+                    <button class="btn-small btn-rules" id="rulesBtn" title="Rules">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10" stroke-width="2"/>
+                            <path d="M12 16v-4m0-4h.01" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                </div>
+                
+                <div class="settings-vertical">
+                    <label class="checkbox-vertical" title="Allow repeating colors">
+                        <input type="checkbox" id="allowRepeats" checked>
+                        <span>Repeats</span>
+                    </label>
+                </div>
 
-        <div class="color-palette">
-            <div class="color-peg" data-color="red" style="background: linear-gradient(135deg, #ff6b6b, #ff3838);"></div>
-            <div class="color-peg" data-color="blue" style="background: linear-gradient(135deg, #4dabf7, #228be6);"></div>
-            <div class="color-peg" data-color="green" style="background: linear-gradient(135deg, #51cf66, #2f9e44);"></div>
-            <div class="color-peg" data-color="yellow" style="background: linear-gradient(135deg, #ffd43b, #fab005);"></div>
-            <div class="color-peg" data-color="purple" style="background: linear-gradient(135deg, #9775fa, #7950f2);"></div>
-            <div class="color-peg" data-color="orange" style="background: linear-gradient(135deg, #ff922b, #fd7e14);"></div>
-        </div>
-
-        <div class="controls">
-            <button class="btn btn-hint" id="hintBtn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M9 11l3-3m0 0l3 3m-3-3v8m0-13a9 9 0 110 18 9 9 0 010-18z" stroke-width="2"/>
-                </svg>
-                Get Hint
-            </button>
-            <button class="btn btn-new" id="newGameBtn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" stroke-width="2"/>
-                </svg>
-                New Game
-            </button>
-            <button class="btn btn-rules" id="rulesBtn">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <circle cx="12" cy="12" r="10" stroke-width="2"/>
-                    <path d="M12 16v-4m0-4h.01" stroke-width="2" stroke-linecap="round"/>
-                </svg>
-                Rules
-            </button>
-        </div>
-
-        <div class="game-settings">
-            <label class="checkbox-container">
-                <input type="checkbox" id="allowRepeats" checked>
-                <span class="checkbox-label">Allow repeating colors</span>
-            </label>
-        </div>
-
-        <div class="stats">
-            <div class="stat-item">
-                <span class="stat-label">Games Played:</span>
-                <span class="stat-value" id="gamesPlayed">0</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">Average Attempts:</span>
-                <span class="stat-value" id="avgAttempts">-</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-label">Best Score:</span>
-                <span class="stat-value" id="bestScore">-</span>
+                <div class="stats-vertical">
+                    <div class="stat-item">
+                        <span class="stat-label">Games:</span>
+                        <span class="stat-value" id="gamesPlayed">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Avg:</span>
+                        <span class="stat-value" id="avgAttempts">-</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Best:</span>
+                        <span class="stat-value" id="bestScore">-</span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -114,9 +108,10 @@
                 
                 <h3>How to Play</h3>
                 <ol>
-                    <li>Click on colors from the palette to fill your guess</li>
-                    <li>Click "Check" to submit your guess</li>
-                    <li>Get feedback with black and white pegs</li>
+                    <li>Click on empty circles in a row to select them</li>
+                    <li>Click colors from the left sidebar to fill selected circles</li>
+                    <li>Click "CHECK" at the top to submit your guess</li>
+                    <li>Get feedback with red and white pegs</li>
                 </ol>
                 
                 <h3>Feedback Pegs</h3>
@@ -133,7 +128,7 @@
                 
                 <h3>Tips</h3>
                 <ul>
-                    <li>Toggle "Allow repeating colors" to change difficulty</li>
+                    <li>Toggle "Repeats" to allow/disallow duplicate colors</li>
                     <li>Use the hint button when stuck for logical guidance</li>
                     <li>Pay attention to patterns between attempts</li>
                 </ul>
