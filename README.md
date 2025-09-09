@@ -1,6 +1,6 @@
 # Mastermind Code Breaker
 
-A beautiful, responsive web-based implementation of the classic Mastermind game with intelligent hint system.
+A beautiful, responsive web-based implementation of the classic Mastermind game with an intelligent hint system.
 
 ## Features
 
